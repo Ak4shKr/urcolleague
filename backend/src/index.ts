@@ -1,12 +1,16 @@
-import express, { Request, Response } from "express";
-
+import express from "express";
+import { PORT } from "./constants/env";
+import { dbConfig } from "./config/db-config";
+import authRouter from "./routes/auth-route";
 const app = express();
-const PORT = 3000;
+app.use(express.json());
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello, TypeScript with Express!");
-});
+app.use("/auth", authRouter);
+// app.use("/users", userRouter);
+// app.use("/properties", propertyRouter);
+
+dbConfig();
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on PORT: ${PORT}`);
 });
