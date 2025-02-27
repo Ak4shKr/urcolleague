@@ -38,10 +38,29 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  credit: {
+    type: Number,
+  },
+  googleId: {
+    type: String,
+  },
   preferences: {
     occupation: String,
     profession: { type: mongoose.Schema.Types.ObjectId, ref: "Profession" },
-    religion: { type: mongoose.Schema.Types.ObjectId, ref: "Religion" },
+    religion: {
+      type: String,
+      enum: [
+        "Hindu",
+        "Muslim",
+        "Sikh",
+        "Chiristian",
+        "jain",
+        "baudh",
+        "jewis",
+        "atheist",
+        "other",
+      ],
+    },
     smoking: Boolean,
     drinking: Boolean,
     petFriendly: Boolean,
@@ -51,6 +70,8 @@ const userSchema = new mongoose.Schema({
     location: String,
     preferredLocation: String,
     language: String,
+    state: String,
+    country: String,
   },
 });
 
