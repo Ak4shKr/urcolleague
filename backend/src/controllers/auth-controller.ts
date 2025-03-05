@@ -1,58 +1,102 @@
-import { z } from "zod";
 import User from "../models/user-model";
-import express, { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
+import {
+  userLoginValidation,
+  userRegisterValidation,
+} from "../validation/zod-validation";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt-token";
+import { ENV } from "../constants/env";
 
-// Zod validation schema
-const userValidation = z.object({
-  fullName: z.string().min(1, "Full name is required"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters long"),
-  gender: z.string(),
-  religion: z.string(),
-  phone: z.string().min(10, "Phone number must be at least 10 digits long"),
-});
-
-// User registration handler
 export const userRegister = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    // Validate request body
-    const requestBody = userValidation.safeParse(req.body);
+    const requestBody = userRegisterValidation.safeParse(req.body);
     if (!requestBody.success) {
       return res.status(400).json({
         message: "Validation failed",
+        data: requestBody.error.errors,
       });
     }
-    const { fullName, email, password, gender, religion, phone } =
-      requestBody.data;
+    const { fullName, email, password } = requestBody.data!;
+    let { gender } = requestBody.data!;
+    gender = gender.toLowerCase();
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
-    if (existingUser !== null) {
+    if (existingUser) {
       return res.status(400).json({ message: "User already exists!" });
     }
 
-    // Create new user
     const newUser = await User.create({
       fullName,
       email,
       password,
       gender,
-      religion,
-      phone,
     });
-
-    // Return success response
+    const resUser = newUser.toObject();
+    delete resUser.password;
     return res
       .status(201)
-      .json({ message: "User created successfully", data: newUser });
+      .json({ message: "User created successfully", data: resUser });
   } catch (error) {
-    // Pass errors to the error-handling middleware
+    res.status(500).json({ message: "Internal server error!" });
     next(error);
   }
 };
 
-export const userLogin = () => {};
+export const userLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, password } = req.body;
+    const requestBody = userLoginValidation.safeParse(req.body);
+    if (!requestBody.success) {
+      return res.status(400).json({
+        message: "Validation failed",
+        data: requestBody.error.errors,
+      });
+    }
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(400).json({ message: "User not found !" });
+    }
+    const isPasswordMatch = password === user.password;
+    if (!isPasswordMatch) {
+      return res.status(400).json({ message: "Invalid password !" });
+    }
+    const accessToken = await generateAccessToken({
+      id: user._id,
+      email: user.email,
+      fullName: user.fullName,
+    });
+    const refreshToken = await generateRefreshToken({
+      id: user._id,
+      email: user.email,
+      fullName: user.fullName,
+    });
+
+    // Set refresh token in HTTP-only cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    const resUser = {
+      email: user.email,
+      fullName: user.fullName,
+    };
+    return res.status(200).json({
+      message: "User logged in",
+      data: { token: accessToken, user: resUser },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error !" });
+    next(error);
+  }
+};

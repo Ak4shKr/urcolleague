@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+  //mandatory
   fullName: {
     type: String,
     required: true,
@@ -9,18 +10,18 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  password: {
+    type: String,
+  },
   phone: {
     type: String,
-    required: true,
-  },
-  dob: {
-    type: Date,
-    required: true,
   },
   gender: {
     type: String,
-    enum: ["Male", "Female", "Other"],
-    requied: true,
+    enum: ["male", "female", "other"],
+  },
+  dob: {
+    type: Date,
   },
   verified: {
     type: Boolean,
@@ -28,15 +29,12 @@ const userSchema = new mongoose.Schema({
   },
   aadharNumber: {
     type: Number,
-    required: true,
   },
   profileImage: {
     type: String,
-    required: true,
   },
   documentImage: {
     type: String,
-    required: true,
   },
   credit: {
     type: Number,
