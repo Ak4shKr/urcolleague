@@ -8,6 +8,7 @@ import { generateAccessToken, generateRefreshToken } from "../utils/jwt-token";
 import { ENV } from "../constants/env/env";
 import { sendMail } from "../config/smtp-config";
 import { userRegisterOTP } from "../constants/messages/auth-messages";
+import { generateOTP } from "../utils/otp-generate";
 
 export const userRegister = async (
   req: Request,
@@ -43,7 +44,7 @@ export const userRegister = async (
     sendMail(
       email,
       "Registration OTP for Nestays",
-      userRegisterOTP(fullName, "1234")
+      userRegisterOTP(fullName, generateOTP().toString())
     );
 
     return res

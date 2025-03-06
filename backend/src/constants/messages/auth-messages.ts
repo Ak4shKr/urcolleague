@@ -8,7 +8,7 @@ export const userRegisterOTP = (name: string, OTP: string) => {
                 <br>
                 <p>Regards,</p>
                 <p>Nestays Service</p>
-                <p>India</p>
+                <p>Faridabad, India</p>
             </body>
         </html>
     `;
