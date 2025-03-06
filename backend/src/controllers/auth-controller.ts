@@ -5,7 +5,9 @@ import {
   userRegisterValidation,
 } from "../validation/zod-validation";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt-token";
-import { ENV } from "../constants/env";
+import { ENV } from "../constants/env/env";
+import { sendMail } from "../config/smtp-config";
+import { userRegisterOTP } from "../constants/messages/auth-messages";
 
 export const userRegister = async (
   req: Request,
@@ -37,6 +39,13 @@ export const userRegister = async (
     });
     const resUser = newUser.toObject();
     delete resUser.password;
+
+    sendMail(
+      email,
+      "Registration OTP for Nestays",
+      userRegisterOTP(fullName, "1234")
+    );
+
     return res
       .status(201)
       .json({ message: "User created successfully", data: resUser });

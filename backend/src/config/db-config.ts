@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { MONGO_URI } from "../constants/env";
+import { MONGO_URI } from "../constants/env/env";
 
 export const dbConfig = async () => {
   await mongoose

@@ -1,5 +1,5 @@
 import { JwtPayload, sign } from "jsonwebtoken";
-import { JWT_SECRET, JWT_SECRET_REFRESH } from "../constants/env";
+import { JWT_SECRET, JWT_SECRET_REFRESH } from "../constants/env/env";
 
 export const generateAccessToken = (payload: JwtPayload) => {
   return sign(payload, JWT_SECRET!, { expiresIn: "15m" });

@@ -1,5 +1,5 @@
 import express, { Application } from "express";
-import { PORT } from "./constants/env";
+import { PORT } from "./constants/env/env";
 import { dbConfig } from "./config/db-config";
 import authRouter from "./routes/auth-route";
 const app: Application = express();
