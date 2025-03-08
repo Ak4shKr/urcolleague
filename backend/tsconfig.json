@@ -4,6 +4,7 @@
     "rootDir": "./src",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "target": "ES2015"
   }
 }
