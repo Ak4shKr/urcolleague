@@ -34,5 +34,8 @@ const PreferenceSchema = new mongoose.Schema({
   },
 });
 
-const UserPreference = mongoose.model("UserPreference", PreferenceSchema);
-export default UserPreference;
+const PropertyPreference = mongoose.model(
+  "PropertyPreference",
+  PreferenceSchema
+);
+export default PropertyPreference;

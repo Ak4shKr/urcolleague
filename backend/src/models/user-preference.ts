@@ -5,15 +5,21 @@ const PreferenceSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  preferred_location: {
-    type: String,
-  },
-  preferred_profession: {
-    type: String,
-  },
-  preferred_religion: {
-    type: String,
-  },
+  preferred_location: [
+    {
+      type: String,
+    },
+  ],
+  preferred_profession: [
+    {
+      type: String,
+    },
+  ],
+  preferred_religion: [
+    {
+      type: String,
+    },
+  ],
   preferred_age_min: {
     type: Number,
   },

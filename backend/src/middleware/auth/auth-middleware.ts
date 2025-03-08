@@ -22,7 +22,7 @@ export const authMiddleware = (
       return;
     } else {
       if (typeof decoded !== "string" && decoded?.id) {
-        req.body.user = decoded.id;
+        req.body.userId = decoded.id;
       } else {
         req.body.user = null;
       }
