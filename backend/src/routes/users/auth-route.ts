@@ -1,6 +1,9 @@
 import express from "express";
-import { userLogin, userRegister } from "../controllers/auths/auth-controller";
-import { asyncHandler } from "../utils/async-handler";
+import {
+  userLogin,
+  userRegister,
+} from "../../controllers/auths/auth-controller";
+import { asyncHandler } from "../../utils/async-handler";
 const router = express.Router();
 
 router.post("/register", asyncHandler(userRegister));

@@ -1,8 +1,8 @@
 import express, { Application } from "express";
 import { PORT } from "./constants/env/env";
 import { dbConfig } from "./config/db-config";
-import authRouter from "./routes/auth-route";
-import adminRouter from "./routes/admin-route";
+import authRouter from "./routes/users/auth-route";
+import adminRouter from "./routes/admin/admin-route";
 const app: Application = express();
 app.use(express.json());
 

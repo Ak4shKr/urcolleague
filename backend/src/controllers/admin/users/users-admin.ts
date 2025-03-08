@@ -5,12 +5,12 @@ export const allUsers = async (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
+): Promise<Response> => {
   try {
     const users = await User.find();
-    res.status(200).json({ message: "All users", data: users });
+    return res.status(200).json({ message: "All users", data: users });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error!" });
+    return res.status(500).json({ message: "Internal server error!" });
     next(error);
   }
 };

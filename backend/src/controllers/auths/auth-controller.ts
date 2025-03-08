@@ -26,7 +26,7 @@ export const userRegister = async (
         data: requestBody.error.errors,
       });
     }
-    const { fullName, email, password } = requestBody.data!;
+    const { name, email, password } = requestBody.data!;
     let { gender } = requestBody.data!;
     gender = gender.toLowerCase();
 
@@ -36,7 +36,7 @@ export const userRegister = async (
     }
 
     const newUser = await User.create({
-      fullName,
+      name,
       email,
       password,
       gender,
@@ -47,7 +47,7 @@ export const userRegister = async (
     sendMail(
       email,
       "Registration OTP for Nestays",
-      userRegisterOTP(fullName, generateOTP().toString())
+      userRegisterOTP(name, generateOTP().toString())
     );
 
     return res
@@ -84,12 +84,12 @@ export const userLogin = async (
     const accessToken = await generateAccessToken({
       id: user._id,
       email: user.email,
-      fullName: user.fullName,
+      fullName: user.name,
     });
     const refreshToken = await generateRefreshToken({
       id: user._id,
       email: user.email,
-      fullName: user.fullName,
+      fullName: user.name,
     });
 
     // Set refresh token in HTTP-only cookie
@@ -100,9 +100,10 @@ export const userLogin = async (
       path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
     const resUser = {
       email: user.email,
-      fullName: user.fullName,
+      fullName: user.name,
     };
     return res.status(200).json({
       message: "User logged in",
