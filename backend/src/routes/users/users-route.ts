@@ -4,11 +4,11 @@ import { asyncHandler } from "../../utils/async-handler";
 import {
   updatePreferences,
   updateProfile,
+  uploadImage,
 } from "../../controllers/user/user-controller";
 import { authMiddleware } from "../../middleware/auth/auth-middleware";
+import { upload } from "../../utils/image-uploader";
 const router = express.Router();
-
-
 
 router.put("/update-profile", authMiddleware, asyncHandler(updateProfile));
 router.put(
@@ -16,6 +16,7 @@ router.put(
   authMiddleware,
   asyncHandler(updatePreferences)
 );
+router.post("/upload-image", upload.single("file"), asyncHandler(uploadImage));
 
 // router.put("/update-password", updatePassword);
 // router.get("/matched-properties", getMatchedProperties);

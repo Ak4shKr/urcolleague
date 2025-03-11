@@ -1,6 +1,7 @@
 import User from "../../models/user-model";
 import { Request, Response, NextFunction } from "express";
 import UserPreference from "../../models/user-preference";
+import { getObjectSignedUrl, uploadFile } from "../../utils/image-uploader";
 
 export const updateProfile = async (
   req: Request,
@@ -46,4 +47,29 @@ export const updatePreferences = async (
   return res
     .status(200)
     .json({ message: "Preferences updated", data: updatedUserPreference });
+};
+
+export const uploadImage = async (
+  req: Request,
+  res: Response
+): Promise<Response | void> => {
+  const file = req.file;
+  if (!file) {
+    return res.status(400).json({ message: "No file Uploaded." });
+  }
+  const fileName = `images/${file.originalname}`;
+
+  const response = await uploadFile({
+    fileBuffer: file.buffer,
+    fileName: fileName,
+    mimetype: file.mimetype,
+  });
+
+  console.log("response", response);
+  // const url = await getObjectSignedUrl(`images/${file.originalname}`);
+  return res
+    .status(200)
+    .json({ data: fileName, message: "image upload successfully." });
+
+  // return res.status(200).json({ message: "image upload successfully." });
 };
