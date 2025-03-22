@@ -1,7 +1,9 @@
 import User from "../../models/user-model";
 import { Request, Response, NextFunction } from "express";
 import UserPreference from "../../models/user-preference";
-import { getObjectSignedUrl, uploadFile } from "../../utils/image-uploader";
+import { uploadFile } from "../../utils/image-uploader";
+import Property from "../../models/property-model";
+import PropertyPreference from "../../models/property-preference";
 
 export const updateProfile = async (
   req: Request,
@@ -66,10 +68,30 @@ export const uploadImage = async (
   });
 
   console.log("response", response);
-  // const url = await getObjectSignedUrl(`images/${file.originalname}`);
   return res
     .status(200)
     .json({ data: fileName, message: "image upload successfully." });
+};
 
-  // return res.status(200).json({ message: "image upload successfully." });
+export const uploadProperty = async (
+  req: Request,
+  res: Response
+): Promise<Response | void> => {
+  const { userId } = req.body;
+  const { propertyData } = req.body;
+
+  const newProperty = new Property({
+    ...propertyData,
+    owner_id: userId,
+  });
+
+  const property = await newProperty.save();
+
+  console.log("property", property.id);
+
+  const PropertyPreference1 = new PropertyPreference({
+    property_id: property.id,
+  });
+  await PropertyPreference1.save();
+  return res.status(200).json({ message: "Property uploaded", data: property });
 };

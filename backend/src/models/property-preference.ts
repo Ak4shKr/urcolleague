@@ -1,10 +1,6 @@
 import mongoose from "mongoose";
 
 const PreferenceSchema = new mongoose.Schema({
-  user_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
   property_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Property",

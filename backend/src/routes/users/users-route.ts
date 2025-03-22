@@ -5,6 +5,7 @@ import {
   updatePreferences,
   updateProfile,
   uploadImage,
+  uploadProperty,
 } from "../../controllers/user/user-controller";
 import { authMiddleware } from "../../middleware/auth/auth-middleware";
 import { upload } from "../../utils/image-uploader";
@@ -23,5 +24,8 @@ router.post("/upload-image", upload.single("file"), asyncHandler(uploadImage));
 // router.get("/my-properties", getMyProperties);
 // router.get("/saved-properties", getMySavedProperties);
 // router.get("/property-details/:id", getPropertyDetails);
+
+router.post("/property-upload", authMiddleware, asyncHandler(uploadProperty));
+
 
 export default router;
