@@ -48,6 +48,11 @@ const userSchema = new mongoose.Schema({
   aadhar_card_image: {
     type: String,
   },
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
 });
 
 const User = mongoose.model("User", userSchema);

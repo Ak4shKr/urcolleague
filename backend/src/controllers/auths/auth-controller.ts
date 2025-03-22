@@ -10,7 +10,7 @@ import {
 } from "../../utils/jwt-token";
 import { ENV } from "../../constants/env/env";
 import { sendMail } from "../../config/smtp-config";
-import { userRegisterOTP } from "../../constants/messages/auth-messages";
+import { userRegisterOTP } from "../../constants/messages/register-email";
 import { generateOTP } from "../../utils/otp-generate";
 import UserPreference from "../../models/user-preference";
 
