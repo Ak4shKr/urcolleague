@@ -53,6 +53,10 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+  OTP: {
+    type: Number,
+    expires: 600,
+  },
 });
 
 const User = mongoose.model("User", userSchema);

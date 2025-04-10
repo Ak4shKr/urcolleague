@@ -8,11 +8,17 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../../utils/jwt-token";
-import { ENV } from "../../constants/env/env";
+import {
+  ENV,
+  googleClientId,
+  googleClientSecret,
+  googleRedirectUrl,
+} from "../../constants/env/env";
 import { sendMail } from "../../config/smtp-config";
 import { userRegisterOTP } from "../../constants/messages/register-email";
 import { generateOTP } from "../../utils/otp-generate";
 import UserPreference from "../../models/user-preference";
+import axios from "axios";
 
 export const userRegister = async (
   req: Request,
@@ -37,7 +43,7 @@ export const userRegister = async (
 
   const newUser = await User.create({
     name,
-    email,
+    email: email.toLowerCase(),
     password,
     gender,
   });
@@ -73,7 +79,7 @@ export const userLogin = async (
       data: requestBody.error.errors,
     });
   }
-  const user = await User.findOne({ email: email });
+  const user = await User.findOne({ email: email.toLowerCase() });
   if (!user) {
     return res.status(400).json({ message: "User not found !" });
   }
@@ -109,4 +115,116 @@ export const userLogin = async (
     message: "User logged in",
     data: { token: accessToken, user: resUser },
   });
+};
+
+export const updatePassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  const { userId, oldPassword, newPassword } = req.body;
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  if (user.password !== oldPassword) {
+    return res.status(400).json({ message: "Old password is incorrect" });
+  }
+  const updatedPassword = await User.findByIdAndUpdate(
+    userId,
+    { password: newPassword },
+    { new: true }
+  );
+  return res
+    .status(200)
+    .json({ message: "Password updated successfully!", data: updatedPassword });
+};
+
+export const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  const otp = generateOTP();
+  sendMail(email, "Password Reset OTP", `Your OTP is ${otp}`);
+  await User.findByIdAndUpdate(user._id, { OTP: otp }, { new: true });
+  return res.status(200).json({ message: "OTP sent to your email" });
+};
+
+export const verifyOTP = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  const { email, OTP } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  if (user.OTP !== OTP) {
+    return res.status(400).json({ message: "Invalid OTP" });
+  }
+  await User.findByIdAndUpdate(user._id, { OTP: null }, { new: true });
+  return res.status(200).json({ message: "OTP verified successfully" });
+};
+
+export const setNewPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<Response | void> => {
+  const { email, newPassword } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  const updatedUser = await User.findByIdAndUpdate(
+    user._id,
+    { password: newPassword },
+    { new: true }
+  );
+  return res
+    .status(200)
+    .json({ message: "Password updated successfully", data: updatedUser });
+};
+
+export const googleAuth = async (
+  req: Request,
+  res: Response
+): Promise<Response | void> => {
+  const { code } = req.body;
+  if (!code) return res.status(400).json({ error: "No code provided" });
+
+  const tokenResponse = await axios.post(
+    "https://oauth2.googleapis.com/token",
+    {
+      code,
+      client_id: googleClientId,
+      client_secret: googleClientSecret,
+      redirect_uri: googleRedirectUrl,
+      grant_type: "authorization_code",
+    }
+  );
+  const { access_token } = tokenResponse.data;
+  if (!access_token)
+    return res.status(400).json({ error: "No access token received" });
+
+  const userInfo = await axios.get(
+    "https://www.googleapis.com/oauth2/v2/userinfo",
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    }
+  );
+
+  const user = userInfo.data;
+  return res
+    .status(200)
+    .json({ access_token, user, message: "Google Auth Success" });
 };

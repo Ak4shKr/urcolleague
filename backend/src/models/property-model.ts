@@ -52,6 +52,9 @@ const PropertySchema: Schema = new mongoose.Schema({
   amenities: {
     type: [String],
   },
+  images: {
+    type: [String],
+  },
   created_at: {
     type: Date,
     default: Date.now,

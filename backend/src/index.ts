@@ -1,7 +1,7 @@
 import express, { Application } from "express";
 import { PORT } from "./constants/env/env";
 import { dbConfig } from "./config/db-config";
-import authRouter from "./routes/users/auth-route";
+import authRouter from "./routes/auth/auth-route";
 import adminRouter from "./routes/admin/admin-route";
 import userRouter from "./routes/users/users-route";
 import { errorHandler } from "./middleware/error/error-handlers";
