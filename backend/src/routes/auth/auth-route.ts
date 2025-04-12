@@ -17,5 +17,5 @@ router.put("/forgot-password", asyncHandler(forgotPassword));
 router.put("/verify-otp", asyncHandler(verifyOTP));
 router.put("/set-password", asyncHandler(setNewPassword));
 
-router.post("/google/auth", asyncHandler(googleAuth));
+// router.post("/google/auth", asyncHandler(googleAuth));
 export default router;
