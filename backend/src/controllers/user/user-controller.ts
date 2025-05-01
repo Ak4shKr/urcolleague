@@ -1,9 +1,9 @@
-import User from "../../models/user-model";
+import User from "../../models/user/user-model";
 import { Request, Response, NextFunction } from "express";
-import UserPreference from "../../models/user-preference";
+import UserPreference from "../../models/user/user-preference";
 import { uploadFile } from "../../utils/image-uploader";
-import Property from "../../models/property-model";
-import PropertyPreference from "../../models/property-preference";
+import Property from "../../models/property/property-model";
+import PropertyPreference from "../../models/property/property-preference";
 
 export const updateProfile = async (
   req: Request,

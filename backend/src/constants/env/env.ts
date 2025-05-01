@@ -8,6 +8,7 @@ export const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH;
 export const ENV = process.env.ENV;
 export const LOCAL_BACKEND = process.env.LOCAL_BACKEND;
 export const LOCAL_FRONTEND = process.env.LOCAL_FRONTEND;
+
 export const BREVO_SMTP_KEY = process.env.BREVO_SMTP_KEY;
 export const BREVO_SMTP_SERVER = process.env.BREVO_SMTP_SERVER;
 export const BREVO_SMTP_PORT = process.env.BREVO_SMTP_PORT;
@@ -22,3 +23,6 @@ export const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME;
 export const googleClientId = process.env.GOOGLE_CLIENT_ID;
 export const googleClientSecret = process.env.GOOGLE_SECRET;
 export const googleRedirectUrl = process.env.GOOGLE_REDIRECT_URL;
+
+
+//mailtrap

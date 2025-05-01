@@ -1,4 +1,4 @@
-import User from "../../models/user-model";
+import User from "../../models/user/user-model";
 import { Request, Response, NextFunction } from "express";
 import {
   userLoginValidation,
@@ -17,7 +17,7 @@ import {
 import { sendMail } from "../../config/smtp-config";
 import { userRegisterOTP } from "../../constants/messages/register-email";
 import { generateOTP } from "../../utils/otp-generate";
-import UserPreference from "../../models/user-preference";
+import UserPreference from "../../models/user/user-preference";
 import axios from "axios";
 
 export const userRegister = async (
